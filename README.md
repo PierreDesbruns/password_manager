@@ -1,6 +1,6 @@
 # Password manager
 
-This simple application allows the user to safely store strong passwords on his/her local machine. It is developped with the open-source version of Qt and it uses the [Sodium library](https://doc.libsodium.org/).
+This simple application allows the user to safely store strong passwords on his/her local machine. It is developped with the [open-source version of Qt](https://www.qt.io/download-open-source) and it uses the [Sodium library](https://doc.libsodium.org/).
 
 Author: Pierre Desbruns
 
