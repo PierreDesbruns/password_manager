@@ -1,3 +1,6 @@
+# Copyright (C) 2024 Pierre Desbruns
+# SPDX-License-Identifier: LGPL-3.0-only
+
 cmake_minimum_required(VERSION 3.5)
 
 project(password_manager VERSION 0.1 LANGUAGES CXX)

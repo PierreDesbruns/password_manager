@@ -1,3 +1,6 @@
+// Copyright (C) 2024 Pierre Desbruns
+// SPDX-License-Identifier: LGPL-3.0-only
+
 #ifndef LOGINWINDOW_H
 #define LOGINWINDOW_H
 
