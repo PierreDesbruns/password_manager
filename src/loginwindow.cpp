@@ -90,7 +90,7 @@ void LoginWindow::verifications()
 
         if (newPasswordLength <= MASTER_MINLEN)
         {
-            // Passwword too short (too big covered with line max length, cf. constructor)
+            // Password too short (too big covered with line max length, cf. constructor)
             QMessageBox::critical(
                 this,
                 this->windowTitle(),
@@ -99,13 +99,25 @@ void LoginWindow::verifications()
             return;
         }
 
-        pwm::updateMasterHash(newPassword);
+        if (newPassword == password)
+        {
+            // New password same as old
+            QMessageBox::information(
+                this,
+                this->windowTitle(),
+                tr("Nouveau mot de passe identique à l'ancien.\nAncien mot de passe conservé.")
+                );
+        }
+        else
+        {
+            pwm::updateMasterHash(newPassword);
 
-        QMessageBox::information(
-            this,
-            this->windowTitle(),
-            tr("Mot de passe modifié avec succès.")
-            );
+            QMessageBox::information(
+                this,
+                this->windowTitle(),
+                tr("Mot de passe modifié avec succès.")
+                );
+        }
     }
 
     accept();
