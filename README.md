@@ -5,7 +5,7 @@ This simple application allows the user to safely store strong passwords on his/
 Author: Pierre Desbruns
 
 ## Install
-This password manager is still under beta development. Releases will be made available at next development stage (release candidate).
+This password manager is still under beta development. Pre-releases will be made available at next development stage (release candidate).
 
 ## Build from source
 This project has been built on Windows from [Qt Creator IDE](https://www.qt.io/product/development-tools) using [MinGW](https://sourceforge.net/projects/mingw/) and [CMake](https://cmake.org/). With these tools, here are the different steps to build the application:
@@ -21,7 +21,7 @@ This project has been built on Windows from [Qt Creator IDE](https://www.qt.io/p
 		PRIVATE "path/to/libsodium-win64/lib/libsodium.a"
 	)
 	```
-3. Build the project with release compiler. A directory called `password_manager-v1.0.0.b1-Release` is created by Qt in parent directory of `src`.
+3. Build the project with release compiler. A directory called `password_manager-v1.0.0.beta.2-Release` is created by Qt in parent directory of `src`.
 4. Remove all files but `password_manager.exe` in release directory and execute `windeployqt.exe` (located inside Qt directory) in a command prompt with `path/to/password_manager.exe` as argument.
 5. Move the three files `default/crypto.params`, `default/entries.cipher`, and `default/master.hash` to release directory.
 6. See [Usage](#usage).
@@ -49,7 +49,11 @@ Application can be closed by simply hitting close button. Entries are saved whil
 - Safely store master via hashing.
 
 ## Versions
-- 1.0.0-b1
+- 1.0.0-beta.2
+	- Fixed Tab key issue in login window.
+	- Added message in login window when new typed master is same as previous.
+	- Fixed wrong encryption when master had been changed.
+- 1.0.0-beta.1
 	- Initial version with all intended features.
 	
 ## License
