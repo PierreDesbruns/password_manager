@@ -86,7 +86,11 @@ MainWindow::~MainWindow()
 
     // Uncomment only if crypto parameters file is empty or parameters need to be changed
     //pwm::updateCryptoParams();
-    pwm::writeEntries(loginWindow->getPassword(), entrynames, usernames, passwords, dates);
+
+    // Encrypting with new master if modified
+    QString master = loginWindow->getNewPassword();
+    if (master.isEmpty()) master = loginWindow->getPassword();
+    pwm::writeEntries(master, entrynames, usernames, passwords, dates);
 }
 
 void MainWindow::copyCell(const int row, const int col) const
