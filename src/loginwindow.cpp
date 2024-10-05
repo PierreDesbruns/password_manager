@@ -31,6 +31,10 @@ LoginWindow::LoginWindow()
 
     formLayout = new QFormLayout();
     formLayout->addRow(passwordLabel, passwordLine);
+    formLayout->addRow(newPasswordLabel, newPasswordLine);
+    formLayout->addRow(confirmNewPasswordLabel, confirmNewPasswordLine);
+    formLayout->setRowVisible(1, false);
+    formLayout->setRowVisible(2, false);
 
     buttonsLayout = new QHBoxLayout();
     buttonsLayout->addWidget(changePwdButton);
@@ -114,8 +118,8 @@ void LoginWindow::changePassword()
     mainContent->setFixedSize(windowLargeSize);
 
     // Showing widgets
-    formLayout->addRow(newPasswordLabel, newPasswordLine);
-    formLayout->addRow(confirmNewPasswordLabel, confirmNewPasswordLine);
+    formLayout->setRowVisible(1, true);
+    formLayout->setRowVisible(2, true);
     passwordLabel->setText(tr("Ancien"));
     changePwdButton->setVisible(false);
 
