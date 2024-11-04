@@ -34,7 +34,7 @@ Run `password_manager.exe`. An authentification window pops up and asks for mast
 
 A correct master password gives access to the main window containing all entries in a table: first column for entry names; second for usernames; third for passwords.
 
-Double-click on username or password to copy it to clipboard. Entry names can be searched in top search bar. A colored circle next to entry name gives indication on password generation date: green for < 3 months; orange for < 6 months; red for > 6 months.
+Double-click on username or password to copy it to clipboard. Entry names can be searched in top search bar. A colored circle next to entry name gives indication on password generation date: green for \< 3 months; orange for \< 6 months; red for \> 6 months.
 
 Application can be closed by simply hitting close button. Entries are saved while closing.
 
@@ -49,6 +49,8 @@ Application can be closed by simply hitting close button. Entries are saved whil
 - Safely store master via hashing.
 
 ## Versions
+- 1.0.0-beta.3
+	- Updated log messages format.
 - 1.0.0-beta.2
 	- Fixed Tab key issue in login window.
 	- Added message in login window when new typed master is same as previous.
