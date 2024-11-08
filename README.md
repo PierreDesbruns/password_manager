@@ -14,15 +14,15 @@ This project has been built on Windows from [Qt Creator IDE](https://www.qt.io/p
 3. Install a [Sodium pre-built library](https://download.libsodium.org/libsodium/releases/) and change path to it in `CMakeLists.txt`:
 	```cmake
 	# Including libsodium
-	target_include_directories(password_manager PRIVATE "path/to/libsodium-win64/include")
+	target_include_directories(password_manager PRIVATE "/path/to/libsodium-win64/include")
 
 	target_link_libraries(password_manager
 		PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-		PRIVATE "path/to/libsodium-win64/lib/libsodium.a"
+		PRIVATE "/path/to/libsodium-win64/lib/libsodium.a"
 	)
 	```
-3. Build the project with release compiler. A directory called `password_manager-v1.0.0.beta.2-Release` is created by Qt in parent directory of `src`.
-4. Remove all files but `password_manager.exe` in release directory and execute `windeployqt.exe` (located inside Qt directory) in a command prompt with `path/to/password_manager.exe` as argument.
+3. Build the project with release compiler. A directory called `password_manager-v1.0.0.beta.3-Release` is created by Qt in parent directory of `src`.
+4. Remove all files but `password_manager.exe` in release directory and execute `windeployqt.exe` (located inside Qt directory) in a command prompt with `/path/to/password_manager.exe` as argument.
 5. Move the three files `default/crypto.params`, `default/entries.cipher`, and `default/master.hash` to release directory.
 6. See [Usage](#usage).
 
@@ -51,6 +51,7 @@ Application can be closed by simply hitting close button. Entries are saved whil
 ## Versions
 - 1.0.0-beta.3
 	- Updated log messages format.
+	- Moved entries file writing from application closing to any entries updates (add, delete, re-generate) to fix empty file after login window cancelling.
 - 1.0.0-beta.2
 	- Fixed Tab key issue in login window.
 	- Added message in login window when new typed master is same as previous.
