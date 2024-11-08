@@ -115,12 +115,12 @@ QStringList readEntries(const QString &master);
 /**
  * @brief Write entries encrypted data to entries file.
  *
- * @return 0 if successfully read entries file and entry fields have same number of elements; -1 otherwise.
+ * @return 0 if successfully wrote entries file and entry fields have same number of elements; -1 otherwise.
  *
  * 1. Secret key is generated from password and parameters.
  * 2. Each entry is concanetated as a line.
  * 3. Each line is encrypted.
- * 4. Each encrypted line is writton to entries file.
+ * 4. Each encrypted line is written to entries file.
  *
  * File structure (encrypted):
  * entryname1\tusername1\tpassword1\tdate1\0

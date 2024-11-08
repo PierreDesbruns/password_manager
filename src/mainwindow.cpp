@@ -88,9 +88,7 @@ MainWindow::~MainWindow()
     //pwm::updateCryptoParams();
 
     // Encrypting with new master if modified
-    QString master = loginWindow->getNewPassword();
-    if (master.isEmpty()) master = loginWindow->getPassword();
-    pwm::writeEntries(master, entrynames, usernames, passwords, dates);
+    // pwm::writeEntries(loginWindow->getNewPassword(), entrynames, usernames, passwords, dates);
 }
 
 void MainWindow::copyCell(const int row, const int col) const
@@ -172,6 +170,12 @@ void MainWindow::showRegWindow() const
 
 void MainWindow::loadEntries()
 {
+    // Temporary variables
+    QStringList tempEntrynames = entrynames;
+    QStringList tempUsernames = usernames;
+    QStringList tempPasswords = passwords;
+    QStringList tempDates = dates;
+
     QStringList entries = pwm::readEntries(loginWindow->getPassword());
 
     if (entries.isEmpty())
@@ -189,20 +193,43 @@ void MainWindow::loadEntries()
             qWarning() << "Format of entry" << entries.indexOf(entry) <<  "is incorrect. Skipped entry.";
         else
         {
-            entrynames.append(entryFields[0]);
-            usernames.append(entryFields[1]);
-            passwords.append(entryFields[2]);
-            dates.append(entryFields[3]);
+            tempEntrynames.append(entryFields[0]);
+            tempUsernames.append(entryFields[1]);
+            tempPasswords.append(entryFields[2]);
+            tempDates.append(entryFields[3]);
         }
     }
 
-    searchModel->setStringList(entries);
+    // Re-writing file in case master password has changed
+    if (pwm::writeEntries(loginWindow->getNewPassword(), tempEntrynames, tempUsernames, tempPasswords, tempDates) != 0)
+    {
+        // Error in file writing
+        qCritical() << "Error in entries writing. Could not encrypt entries with new password.";
+        QMessageBox::critical(
+            this,
+            this->windowTitle(),
+            tr("Une erreur est survenue lors de la prise en compte du nouveau mot de passe.\n"
+               "Si vous souhaitez conserver vos entrées, fermez l'application SANS AJOUTER\n"
+               "D'ENTREE et revenez à l'ancien mot de passe.\n"
+               "Sinon, toute entrée ajoutée écrasera les entrées précédemment enregistrées."
+               )
+            );
+        return;
+    }
 
+    // Updating entries attributes
+    entrynames = tempEntrynames;
+    usernames = tempUsernames;
+    passwords = tempPasswords;
+    dates = tempDates;
+
+    searchModel->setStringList(entries);
     updateTable();
 }
 
 void MainWindow::addEntry()
 {
+    // User inputs
     QString entryname = addWindow->getEntryname();
     QString username = addWindow->getUsername();
     int passwordLength = addWindow->getPasswordLength();
@@ -210,6 +237,12 @@ void MainWindow::addEntry()
     bool hasUpCase = addWindow->hasUpCase();
     bool hasNumbers = addWindow->hasNumbers();
     bool hasSpecials = addWindow->hasSpecials();
+
+    // Temporary variables
+    QStringList tempEntrynames = entrynames;
+    QStringList tempUsernames = usernames;
+    QStringList tempPasswords = passwords;
+    QStringList tempDates = dates;
 
     if (exists(entryname, username))
     {
@@ -230,58 +263,117 @@ void MainWindow::addEntry()
     if (password.isEmpty())
     {
         // Error in password generation
-        qWarning() << "No password was generated. Entry" << entryname << username << "not added.";
+        QMessageBox::critical(
+            this,
+            this->windowTitle(),
+            tr("Une erreur est survenue lors de la génération du mot de passe.\n"
+               "L'entrée suivante n'a pas été ajoutée:\n\n"
+               "\t%1\n"
+               "\t%2"
+               ).arg(entryname, username)
+            );
         return;
     }
 
-    entrynames.append(entryname);
-    usernames.append(username);
-    passwords.append(password);
-    dates.append(QDate::currentDate().toString("yyyy.MM.dd"));
+    tempEntrynames.append(entryname);
+    tempUsernames.append(username);
+    tempPasswords.append(password);
+    tempDates.append(QDate::currentDate().toString("yyyy.MM.dd"));
 
-    searchModel->setStringList(entrynames);
+    // Writing entries in file
+    if (pwm::writeEntries(loginWindow->getNewPassword(), tempEntrynames, tempUsernames, tempPasswords, tempDates) != 0)
+    {
+        // Error in file writing
+        QMessageBox::critical(
+            this,
+            this->windowTitle(),
+            tr("Une erreur est survenue lors de l'enregistrement des entrées.\n"
+               "L'entrée suivante n'a pas été ajoutée:\n\n"
+               "\t%1\n"
+               "\t%2"
+               ).arg(entryname, username)
+            );
+        return;
+    }
 
-    updateTable();
+    // Updating entries attributes
+    entrynames = tempEntrynames;
+    usernames = tempUsernames;
+    passwords = tempPasswords;
+    dates = tempDates;
 
     QMessageBox::information(
         this,
         this->windowTitle(),
         tr("Entrée ajoutée avec succès.")
         );
+
+    searchModel->setStringList(entrynames);
+    updateTable();
 }
 
 void MainWindow::delEntry()
 {
+    // User inputs
     QString entryname = delWindow->getEntryname();
     QString username = delWindow->getUsername();
     int indexToRemove = entrynames.indexOf(entryname);
 
+    // Temporary variables
+    QStringList tempEntrynames = entrynames;
+    QStringList tempUsernames = usernames;
+    QStringList tempPasswords = passwords;
+    QStringList tempDates = dates;
+
     while (indexToRemove != -1)
     {
-        if (usernames[indexToRemove] == username)
+        if (tempUsernames[indexToRemove] == username)
         {
             // Should be executed only once because entries cannot contains same entry name and user name
-            entrynames.removeAt(indexToRemove);
-            usernames.removeAt(indexToRemove);
-            passwords.removeAt(indexToRemove);
-            dates.removeAt(indexToRemove);
+            tempEntrynames.removeAt(indexToRemove);
+            tempUsernames.removeAt(indexToRemove);
+            tempPasswords.removeAt(indexToRemove);
+            tempDates.removeAt(indexToRemove);
         }
-        indexToRemove = entrynames.indexOf(entryname, indexToRemove+1);
+        indexToRemove = tempEntrynames.indexOf(entryname, indexToRemove+1);
     }
 
-    searchModel->setStringList(entrynames);
+    // Writing entries in file
+    if (pwm::writeEntries(loginWindow->getNewPassword(), tempEntrynames, tempUsernames, tempPasswords, tempDates) != 0)
+    {
+        // Error in file writing
+        qCritical() << "Failed to write entry. Entry" << entryname << username << "not added.";
+        QMessageBox::critical(
+            this,
+            this->windowTitle(),
+            tr("Une erreur est survenue lors l'enregistrement des entrées.\n"
+               "L'entrée suivante n'a pas été ajoutée:\n\n"
+               "\t%1\n"
+               "\t%2"
+               ).arg(entryname, username)
+            );
+        return;
+    }
 
-    updateTable();
+    // Updating entries attributes
+    entrynames = tempEntrynames;
+    usernames = tempUsernames;
+    passwords = tempPasswords;
+    dates = tempDates;
 
     QMessageBox::information(
         this,
         this->windowTitle(),
         tr("Entrée supprimée avec succès.")
         );
+
+    searchModel->setStringList(entrynames);
+    updateTable();
 }
 
 void MainWindow::regEntry()
 {
+    // User inputs
     QString entryname = regWindow->getEntryname();
     QString username = regWindow->getUsername();
     int passwordLength = regWindow->getPasswordLength();
@@ -290,33 +382,72 @@ void MainWindow::regEntry()
     bool hasNumbers = regWindow->hasNumbers();
     bool hasSpecials = regWindow->hasSpecials();
     int indexToReset = entrynames.indexOf(entryname);
+
+    // Temporary variables
+    QStringList tempEntrynames = entrynames;
+    QStringList tempUsernames = usernames;
+    QStringList tempPasswords = passwords;
+    QStringList tempDates = dates;
+
     QString password = pwm::generatePassword(passwordLength, hasLowCase, hasUpCase, hasNumbers, hasSpecials);
 
     if (password.isEmpty())
     {
         // Error in password generation
         qWarning() << "No password was generated. Kept entry" << entryname << username << "with old password.";
+        QMessageBox::critical(
+            this,
+            this->windowTitle(),
+            tr("Une erreur est survenue lors de la génération du mot de passe.\n"
+               "Le mot de passe de l'entrée suivante n'a pas été re-généré:\n\n"
+               "\t%1\n"
+               "\t%2"
+               ).arg(entryname, username)
+            );
         return;
     }
 
     while (indexToReset != -1)
     {
-        if (usernames[indexToReset] == username)
+        if (tempUsernames[indexToReset] == username)
         {
             // Should be executed only once because entries cannot contains same entry name and user name
-            passwords[indexToReset] = password;
-            dates[indexToReset] = QDate::currentDate().toString("yyyy.MM.dd");
+            tempPasswords[indexToReset] = password;
+            tempDates[indexToReset] = QDate::currentDate().toString("yyyy.MM.dd");
         }
-        indexToReset = entrynames.indexOf(entryname, indexToReset+1);
+        indexToReset = tempEntrynames.indexOf(entryname, indexToReset+1);
     }
 
-    updateTable();
+    // Writing entries in file
+    if (pwm::writeEntries(loginWindow->getNewPassword(), tempEntrynames, tempUsernames, tempPasswords, tempDates) != 0)
+    {
+        // Error in file writing
+        qCritical() << "Failed to write entry. Entry" << entryname << username << "not added.";
+        QMessageBox::critical(
+            this,
+            this->windowTitle(),
+            tr("Une erreur est survenue lors de l'enregistrement de l'entrée.\n"
+               "Le mot de passe de l'entrée n'a pas été re-généré:\n\n"
+               "\t%1\n"
+               "\t%2"
+               ).arg(entryname, username)
+            );
+        return;
+    }
+
+    // Updating entries attributes
+    entrynames = tempEntrynames;
+    usernames = tempUsernames;
+    passwords = tempPasswords;
+    dates = tempDates;
 
     QMessageBox::information(
         this,
         this->windowTitle(),
         tr("Mot de passe re-généré avec succès.")
         );
+
+    updateTable();
 }
 
 QIcon MainWindow::iconFrom(const QString &date) const

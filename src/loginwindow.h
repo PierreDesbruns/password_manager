@@ -25,7 +25,7 @@ class LoginWindow : public QDialog
 public:
     LoginWindow();
     QString getPassword() const { return passwordLine->text(); }
-    QString getNewPassword() const { return newPasswordLine->text(); }
+    QString getNewPassword() const { return (newPasswordLine->text().isEmpty() ? getPassword() : newPasswordLine->text()); }
 
 private slots:
     /**

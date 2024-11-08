@@ -79,23 +79,24 @@ private slots:
 
     /**
      * @brief Load entries from entries file and store each field in corresponding string list.
+     * Entries file is re-encrypted in case master password has changed.
      * Called when [loginwindow] is accepted.
      */
     void loadEntries();
     /**
-     * Add an entry to string lists and update table.
+     * Add an entry to string lists, write entries in file, and update table.
      * Called when [addWindow] is accepted.
-     * @note Skip unrecognized entries.
+     * @note Check if entry already exists.
      */
     void addEntry();
     /**
-     * Remove an entry from string lists attributes and update table.
+     * Remove an entry from string lists attributes, write entries in file, and update table.
      * Called when [delWindow] is accepted.
      * @note Given entry should exist due to [delwindow] verifications.
      */
     void delEntry();
     /**
-     * Re-generate a password for given entry and username.
+     * Re-generate a password for given entry and username, and write entries in file,.
      * Called when [regWindow] is accepted.
      * @note Given entry should exist due to [regwindow] verifications.
      */
