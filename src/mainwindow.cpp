@@ -61,9 +61,9 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout->addWidget(searchBar,1,0,1,3);
     mainLayout->addWidget(entryTable,2,0,1,3);
 
-    mainContent = new QWidget(this);
-    mainContent->setFixedSize(windowSize);
+    mainContent = new QWidget();
     mainContent->setLayout(mainLayout);
+    setCentralWidget(mainContent);
 
     connect(entryTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(copyCell(int,int)));
     connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
