@@ -223,7 +223,7 @@ void MainWindow::loadEntries()
     passwords = tempPasswords;
     dates = tempDates;
 
-    searchModel->setStringList(entries);
+    searchModel->setStringList(entrynames);
     updateTable();
 }
 
