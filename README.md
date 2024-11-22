@@ -49,6 +49,8 @@ Application can be closed by simply hitting close button. Entries are saved whil
 - Safely store master via hashing.
 
 ## Versions
+- 1.0.0-beta.4
+	- Fixed wrong autocompletion in search bar.
 - 1.0.0-beta.3
 	- Updated log messages format.
 	- Moved entries file writing from application closing to any entries updates (add, delete, re-generate) to fix empty file after login window cancelling.
