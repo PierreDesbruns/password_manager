@@ -5,7 +5,8 @@ This simple application allows the user to safely store strong passwords on his/
 Author: Pierre Desbruns
 
 ## Install
-This password manager is still under beta development. Pre-releases will be made available at next development stage (release candidate).
+Download the [password_manager-vX.X.X.zip file](https://github.com/PierreDesbruns/password_manager/releases/tag/v1.1.0) of the desired version (v1.0.0 is the latest) and extract all files.
+Then, see [Usage](#usage).
 
 ## Build from source
 This project has been built on Windows from [Qt Creator IDE](https://www.qt.io/product/development-tools) using [MinGW](https://sourceforge.net/projects/mingw/) and [CMake](https://cmake.org/). With these tools, here are the different steps to build the application:
@@ -21,7 +22,7 @@ This project has been built on Windows from [Qt Creator IDE](https://www.qt.io/p
 		PRIVATE "/path/to/libsodium-win64/lib/libsodium.a"
 	)
 	```
-3. Build the project with release compiler. A directory called `password_manager-v1.0.0.beta.3-Release` is created by Qt in parent directory of `src`.
+3. Build the project with release compiler. A directory called `password_manager-v1.0.0-Release` is created by Qt in parent directory of `src`.
 4. Remove all files but `password_manager.exe` in release directory and execute `windeployqt.exe` (located inside Qt directory) in a command prompt with `/path/to/password_manager.exe` as argument.
 5. Move the three files `default/crypto.params`, `default/entries.cipher`, and `default/master.hash` to release directory.
 6. See [Usage](#usage).
@@ -30,7 +31,7 @@ This project has been built on Windows from [Qt Creator IDE](https://www.qt.io/p
 > Release folder can be moved anywhere. A shortcut to executable file can also be set at any convenient location.
 
 ## Usage
-Run `password_manager.exe`. An authentification window pops up and asks for master password (default is *1234*).
+Run `password_manager.exe`. An authentication window pops up and asks for master password (default is *1234*).
 
 A correct master password gives access to the main window containing all entries in a table: first column for entry names; second for usernames; third for passwords.
 
@@ -39,8 +40,8 @@ Double-click on username or password to copy it to clipboard. Entry names can be
 Application can be closed by simply hitting close button. Entries are saved while closing.
 
 ## Features
-- Generate an unpredictible password from any choosable type of character (lower and upper cases, numbers and special characters).
-- Add / delete entries containing entry name, username, unpredictible password and date of last password update.
+- Generate an unpredictable password from any type of character (lower and upper cases, numbers and special characters can be chosen).
+- Add / delete entries containing entry name, username, unpredictable password and date of last password update.
 - Re-generate a given entry's password if it is outdated.
 - Search for entries via entry name.
 - Copy username or password to clipboard via a simple double click on it.
