@@ -1,6 +1,6 @@
             GNU LESSER GENERAL PUBLIC LICENSE
 
- Copyright (C) 2024 Pierre Desbruns
+ Copyright (C) 2025 Pierre Desbruns
  Contact: pierre.desbruns@gmail.com
 
  You may use, distribute and copy this password manager under the terms of
