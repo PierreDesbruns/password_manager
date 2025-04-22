@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Pierre Desbruns
+// Copyright (C) 2025 Pierre Desbruns
 // SPDX-License-Identifier: LGPL-3.0-only
 
 #include "mainwindow.h"
@@ -27,12 +27,13 @@ MainWindow::MainWindow(QWidget *parent)
     searchBar = new QLineEdit();
     searchBar->setCompleter(searchCompleter);
 
-    entryTable = new QTableWidget(0,3);
+    entryTable = new QTableWidget(0,4);
     entryTable->horizontalHeader()->setVisible(false);
     entryTable->verticalHeader()->setVisible(false);
     entryTable->setColumnWidth(0,120);
     entryTable->setColumnWidth(1,120);
-    entryTable->setColumnWidth(2,120);
+    entryTable->setColumnWidth(2,100);
+    entryTable->setColumnWidth(3,30);
 
     loginWindow = new LoginWindow();
     loginWindow->setWindowIcon(windowIcon());
@@ -66,6 +67,8 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(mainContent);
 
     connect(entryTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(copyCell(int,int)));
+    connect(entryTable, SIGNAL(cellClicked(int,int)), this, SLOT(buttonFromCell(int,int)));
+    connect(this, SIGNAL(editEntryClicked(int)), this, SLOT(editEntry(int)));
     connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
     connect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
     connect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
@@ -99,6 +102,15 @@ void MainWindow::copyCell(const int row, const int col) const
         clipboard->setText(passwords[row]);
 }
 
+void MainWindow::buttonFromCell(const int row, const int col)
+{
+    switch (col)
+    {
+    case 3: emit editEntryClicked(row); break;
+    default: break;
+    }
+}
+
 void MainWindow::updateTable() const
 {
     entryTable->setRowCount(0); // clearing table
@@ -112,6 +124,7 @@ void MainWindow::updateTable() const
         entryTable->setItem(row,0,new QTableWidgetItem(iconFrom(dates[row]),entrynames[row]));
         entryTable->setItem(row,1,new QTableWidgetItem(usernames[row]));
         entryTable->setItem(row,2,new QTableWidgetItem(QString("***************")));
+        entryTable->setItem(row,3,new QTableWidgetItem(QIcon(":/edit"), QString()));
         entryTable->setRowHeight(row,20);
 
         for (int col = 0 ; col < nbCols ; ++col)
@@ -138,6 +151,7 @@ void MainWindow::updateTable(const QString &entryname) const
             entryTable->setItem(row,0,new QTableWidgetItem(iconFrom(dates[currentIndex]), entrynames[currentIndex]));
             entryTable->setItem(row,1,new QTableWidgetItem(usernames[currentIndex]));
             entryTable->setItem(row,2,new QTableWidgetItem(QString("***************")));
+            entryTable->setItem(row,3,new QTableWidgetItem(QIcon(":/edit"), QString()));
             entryTable->setRowHeight(row,20);
 
             // Disabling modification for each cell
@@ -244,7 +258,7 @@ void MainWindow::addEntry()
     QStringList tempPasswords = passwords;
     QStringList tempDates = dates;
 
-    if (exists(entryname, username))
+    if (indexOf(entryname, username) != -1)
     {
         QMessageBox::warning(
             this,
@@ -450,6 +464,88 @@ void MainWindow::regEntry()
     updateTable();
 }
 
+void MainWindow::editEntry(const int row)
+{
+    int rowEdited = entryRowBeingEdited();
+
+    if (rowEdited == -1) // no entry is being edited
+    {
+        int indexToEdit = indexOf(entryTable->item(row,0)->text(), entryTable->item(row,1)->text());
+
+        // Entry name
+        entryTable->item(row,0)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+        entryTable->item(row,0)->setBackground(QColor(30,150,190));
+        entryTable->item(row,0)->setForeground(QColor(255,255,255));
+        // User name
+        entryTable->item(row,1)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
+        entryTable->item(row,1)->setBackground(QColor(30,150,190));
+        entryTable->item(row,1)->setForeground(QColor(255,255,255));
+        // Setting edit icon to validate icon
+        entryTable->item(row,3)->setIcon(QIcon(":/validate"));
+
+        // Memorizing entry to edit
+        entrynames[indexToEdit] = "entrynametoBeEdited";
+        usernames[indexToEdit] = "usernametoBeEdited";
+
+        // Disabling search bar while editing
+        disconnect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
+    }
+    else if (rowEdited == row) // user validates modifications
+    {
+        int indexToEdit = indexOf("entrynametoBeEdited", "usernametoBeEdited");
+
+        // Entry name
+        entryTable->item(row,0)->setFlags(Qt::ItemIsEnabled);
+//        entryTable->item(row,0)->setBackground(QColor(255,255,255));
+//        entryTable->item(row,0)->setForeground(QColor(0,0,0));
+        // User name
+        entryTable->item(row,1)->setFlags(Qt::ItemIsEnabled);
+//        entryTable->item(row,1)->setBackground(QColor(255,255,255));
+//        entryTable->item(row,1)->setForeground(QColor(0,0,0));
+        // Resetting validate icon to edit icon
+//        entryTable->item(row,3)->setIcon(QIcon(":/edit"));
+
+        // Updating new entry and user names
+        entrynames[indexToEdit] = entryTable->item(row,0)->text();
+        usernames[indexToEdit] = entryTable->item(row,1)->text();
+
+        // Writing entries in file
+        if (pwm::writeEntries(loginWindow->getNewPassword(), entrynames, usernames, passwords, dates) != 0)
+        {
+            // Error in file writing
+            QMessageBox::critical(
+                this,
+                this->windowTitle(),
+                tr("Une erreur est survenue lors de l'enregistrement des entrées.\n"
+                   "L'entrée suivante n'a pas été modifiée:\n"
+                   "\t%1\n"
+                   "\t%2\n"
+                   "L'application doit être redémarrée pour recharger les entrées correctes."
+                   ).arg(entrynames[indexToEdit], usernames[indexToEdit])
+                );
+            close();
+        }
+
+        // Re-enabling search bar
+        connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
+
+        updateTable();
+    }
+    else // another entry is being modified
+    {
+        QMessageBox::warning(
+            this,
+            this->windowTitle(),
+            tr("L'entrée\n"
+               "\t%1\n"
+               "\t%2\n"
+               "est en cours de modification.\n"
+               "Veuillez valider les modifications pour éditer une autre entrée."
+               ).arg(entryTable->item(rowEdited, 0)->text(), entryTable->item(rowEdited, 1)->text())
+            );
+    }
+}
+
 QIcon MainWindow::iconFrom(const QString &date) const
 {
     QDate currentDate = QDate::currentDate();
@@ -471,14 +567,28 @@ QIcon MainWindow::iconFrom(const QString &date) const
     return QIcon(":/red");
 }
 
-const bool MainWindow::exists(const QString &entryname, const QString &username) const
+const int MainWindow::indexOf(const QString &entryname, const QString &username) const
 {
     int currentIndex = entrynames.indexOf(entryname);
 
     while (currentIndex != -1)
     {
-        if (usernames[currentIndex] == username) return true;
+        if (usernames[currentIndex] == username) return currentIndex;
         currentIndex = entrynames.indexOf(entryname, currentIndex+1);
     }
-    return false;
+
+    return -1;
+}
+
+const int MainWindow::entryRowBeingEdited() const
+{
+    for (int row = 0 ; row < entryTable->rowCount() ; row++)
+    {
+        // Entry and user names can be edited at the same time,
+        // so checking entry name is enough.
+        if (entryTable->item(row, 0)->flags() == (Qt::ItemIsEnabled | Qt::ItemIsEditable))
+            return row;
+    }
+
+    return -1;
 }

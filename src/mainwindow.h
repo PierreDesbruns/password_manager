@@ -41,15 +41,21 @@ public:
 private slots:
     /**
      * @brief Copy username or password to clipboard.
-     *
      * @param row: Selected row of entry table.
      * @param col: Selected column of entry table.
      *
      * Called when a cell is double clicked.
-     *
-     * @note Does nothing for col == 1.
+     * Works only for col == 1 and col == 2.
      */
     void copyCell(const int row, const int col) const;
+    /**
+     * @brief Execute the action corresponding to the cell clicked.
+     * @param row: Row index of the clicked cell.
+     * @param col: Column index of the clicked cell.
+     *
+     * Works only for col == 3.
+     */
+    void buttonFromCell(const int row, const int col);
     /**
      * @brief Fills the table with all entries.
      * Called when the table needs to be reset.
@@ -57,7 +63,6 @@ private slots:
     void updateTable() const;
     /**
      * @brief Fills the table only with entries corresponding to given entry name.
-     *
      * @param entryname: name of entries to display.
      *
      * Called when an entry name is selected by auto-completion.
@@ -84,28 +89,45 @@ private slots:
      */
     void loadEntries();
     /**
-     * Add an entry to string lists, write entries in file, and update table.
+     * @brief Add an entry to string lists, write entries in file, and update table.
      * Called when [addWindow] is accepted.
      * @note Check if entry already exists.
      */
     void addEntry();
     /**
-     * Remove an entry from string lists attributes, write entries in file, and update table.
+     * @brief Remove an entry from string lists attributes, write entries in file, and update table.
      * Called when [delWindow] is accepted.
      * @note Given entry should exist due to [delwindow] verifications.
      */
     void delEntry();
     /**
-     * Re-generate a password for given entry and username, and write entries in file,.
+     * @brief Re-generate a password for given entry and username, and write entries in file.
      * Called when [regWindow] is accepted.
      * @note Given entry should exist due to [regwindow] verifications.
      */
     void regEntry();
+    /**
+     * @brief Make entry and user names editable.
+     * @param row: Row index of the entry being edited.
+     * Called when the edit cell of an entry is clicked.
+     * Disconnects searchbar text changed signal from table update to avoid
+     * searching while editing an entry.
+     * @note Close the window if a problem occurs while writing in file.
+     */
+    void editEntry(const int row);
+
+signals:
+    /**
+     * @brief Signal emitted when the edit button is clicked
+     * @param row: Row index of the entry being edited.
+     * @see buttonFromCell()
+     */
+    void editEntryClicked(const int row);
 
 private:
     QClipboard *clipboard;
 
-    const QSize windowSize = QSize(400,500);
+    const QSize windowSize = QSize(420,500);
 
     QWidget *mainContent;
 
@@ -133,7 +155,6 @@ private:
 
     /**
      * @brief Return an icon corresponding to an entry's date of creation.
-     *
      * @param date: date of creation of the entry. Expected format: "yyyy.MM.dd".
      * @return Green icon if date is okay; Orange icon if date is about to be passed; Red icon otherwise.
      *
@@ -144,14 +165,17 @@ private:
     QIcon iconFrom(const QString &date) const;
 
     /**
-     * @brief Detect if given entry and username already exist.
-     *
-     * @param entryname: name of entry.
-     * @param username: usernam associated to entry.
-     * @return true if an entry with same username already exists; false otherwise.
-     *
-     * Used to avoid several entries with same name and username.
+     * @brief Give the string list index corresponding to entry and user names.
+     * @param entryname: Name of the entry.
+     * @param username: Name of the user.
+     * @return Index of corresponding entry and user names; -1 if entry does not exist.
      */
-    const bool exists(const QString &entryname, const QString &username) const;
+    const int indexOf(const QString& entryname, const QString &username) const;
+
+    /**
+     * @brief Returns the row index of the entry being edited by user.
+     * @return Row index if a row is being edited; -1 other wise.
+     */
+    const int entryRowBeingEdited() const;
 };
 #endif // MAINWINDOW_H

@@ -1,10 +1,10 @@
-<!--  Copyright (C) 2024 Pierre Desbruns SPDX-License-Identifier: LGPL-3.0-only -->
-
 <RCC>
     <qresource prefix="/">
         <file alias="green">icons/green.ico</file>
         <file alias="orange">icons/orange.ico</file>
         <file alias="red">icons/red.ico</file>
         <file alias="logo">icons/logo.ico</file>
+        <file alias="edit">icons/edit.ico</file>
+        <file alias="validate">icons/validate.ico</file>
     </qresource>
 </RCC>
