@@ -116,7 +116,7 @@ void MainWindow::updateTable() const
     entryTable->setRowCount(0); // clearing table
 
     int nbRows = entrynames.size(); // <=> nb of entries
-    int nbCols = entryTable->columnCount(); // should be 3
+    int nbCols = entryTable->columnCount(); // should be 4
 
     for (int row = 0 ; row < nbRows ; ++row)
     {
@@ -143,7 +143,7 @@ void MainWindow::updateTable(const QString &entryname) const
         int currentIndex = entrynames.indexOf(entryname);
 
         int row = 0; // <=> each entry
-        int nbCols = entryTable->columnCount(); // should be 3
+        int nbCols = entryTable->columnCount(); // should be 4
 
         while (currentIndex != -1)
         {
@@ -487,23 +487,19 @@ void MainWindow::editEntry(const int row)
         entrynames[indexToEdit] = "entrynametoBeEdited";
         usernames[indexToEdit] = "usernametoBeEdited";
 
-        // Disabling search bar while editing
+        // Disabling search bar and buttons while editing
         disconnect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
+        disconnect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
+        disconnect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
+        disconnect(regButton, SIGNAL(pressed()), this, SLOT(showRegWindow()));
     }
     else if (rowEdited == row) // user validates modifications
     {
         int indexToEdit = indexOf("entrynametoBeEdited", "usernametoBeEdited");
 
-        // Entry name
-        entryTable->item(row,0)->setFlags(Qt::ItemIsEnabled);
-//        entryTable->item(row,0)->setBackground(QColor(255,255,255));
-//        entryTable->item(row,0)->setForeground(QColor(0,0,0));
-        // User name
-        entryTable->item(row,1)->setFlags(Qt::ItemIsEnabled);
-//        entryTable->item(row,1)->setBackground(QColor(255,255,255));
-//        entryTable->item(row,1)->setForeground(QColor(0,0,0));
-        // Resetting validate icon to edit icon
-//        entryTable->item(row,3)->setIcon(QIcon(":/edit"));
+        entryTable->item(row,0)->setFlags(Qt::ItemIsEnabled); // entry name
+        entryTable->item(row,1)->setFlags(Qt::ItemIsEnabled); // user name
+
 
         // Updating new entry and user names
         entrynames[indexToEdit] = entryTable->item(row,0)->text();
@@ -526,8 +522,11 @@ void MainWindow::editEntry(const int row)
             close();
         }
 
-        // Re-enabling search bar
+        // Re-enabling search bar and buttons
         connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
+        connect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
+        connect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
+        connect(regButton, SIGNAL(pressed()), this, SLOT(showRegWindow()));
 
         updateTable();
     }
