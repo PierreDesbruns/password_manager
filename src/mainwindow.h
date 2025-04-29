@@ -127,7 +127,7 @@ signals:
 private:
     QClipboard *clipboard;
 
-    const QSize windowSize = QSize(420,500);
+    const QSize windowSize = QSize(460,500);
 
     QWidget *mainContent;
 
@@ -152,6 +152,12 @@ private:
     QStringList usernames;
     QStringList passwords;
     QStringList dates;
+
+    /**
+     * @brief Add a row to the entry table.
+     * @param entryIndex: Index of the entry to display.
+     */
+    void addRow(const int entryIndex) const;
 
     /**
      * @brief Return an icon corresponding to an entry's date of creation.

@@ -27,13 +27,14 @@ MainWindow::MainWindow(QWidget *parent)
     searchBar = new QLineEdit();
     searchBar->setCompleter(searchCompleter);
 
-    entryTable = new QTableWidget(0,4);
+    entryTable = new QTableWidget(0,5);
     entryTable->horizontalHeader()->setVisible(false);
     entryTable->verticalHeader()->setVisible(false);
-    entryTable->setColumnWidth(0,120);
-    entryTable->setColumnWidth(1,120);
-    entryTable->setColumnWidth(2,100);
-    entryTable->setColumnWidth(3,30);
+    entryTable->setColumnWidth(0,120); // entry names
+    entryTable->setColumnWidth(1,120); // user names
+    entryTable->setColumnWidth(2,100); // passwords
+    entryTable->setColumnWidth(3,20);  // edit buttons
+    entryTable->setColumnWidth(4,20);  // re-generate buttons
 
     loginWindow = new LoginWindow();
     loginWindow->setWindowIcon(windowIcon());
@@ -113,23 +114,12 @@ void MainWindow::buttonFromCell(const int row, const int col)
 
 void MainWindow::updateTable() const
 {
+    int nbRows = entrynames.size(); // <=> nb of entries
+
     entryTable->setRowCount(0); // clearing table
 
-    int nbRows = entrynames.size(); // <=> nb of entries
-    int nbCols = entryTable->columnCount(); // should be 4
-
     for (int row = 0 ; row < nbRows ; ++row)
-    {
-        entryTable->insertRow(row);
-        entryTable->setItem(row,0,new QTableWidgetItem(iconFrom(dates[row]),entrynames[row]));
-        entryTable->setItem(row,1,new QTableWidgetItem(usernames[row]));
-        entryTable->setItem(row,2,new QTableWidgetItem(QString("***************")));
-        entryTable->setItem(row,3,new QTableWidgetItem(QIcon(":/edit"), QString()));
-        entryTable->setRowHeight(row,20);
-
-        for (int col = 0 ; col < nbCols ; ++col)
-            entryTable->item(row,col)->setFlags(Qt::ItemIsEnabled);
-    }
+        addRow(row);
 }
 
 void MainWindow::updateTable(const QString &entryname) const
@@ -138,26 +128,14 @@ void MainWindow::updateTable(const QString &entryname) const
         updateTable(); // resetting table
     else
     {
-        entryTable->setRowCount(0); // clearing table
-
         int currentIndex = entrynames.indexOf(entryname);
-
         int row = 0; // <=> each entry
-        int nbCols = entryTable->columnCount(); // should be 4
+
+        entryTable->setRowCount(0); // clearing table
 
         while (currentIndex != -1)
         {
-            entryTable->insertRow(row);
-            entryTable->setItem(row,0,new QTableWidgetItem(iconFrom(dates[currentIndex]), entrynames[currentIndex]));
-            entryTable->setItem(row,1,new QTableWidgetItem(usernames[currentIndex]));
-            entryTable->setItem(row,2,new QTableWidgetItem(QString("***************")));
-            entryTable->setItem(row,3,new QTableWidgetItem(QIcon(":/edit"), QString()));
-            entryTable->setRowHeight(row,20);
-
-            // Disabling modification for each cell
-            for (int col = 0 ; col < nbCols ; ++col)
-                entryTable->item(row,col)->setFlags(Qt::ItemIsEnabled);
-
+            addRow(currentIndex);
             currentIndex = entrynames.indexOf(entryname, currentIndex+1);
             ++row;
         }
@@ -543,6 +521,33 @@ void MainWindow::editEntry(const int row)
                ).arg(entryTable->item(rowEdited, 0)->text(), entryTable->item(rowEdited, 1)->text())
             );
     }
+}
+
+void MainWindow::addRow(const int entryIndex) const
+{
+    int row = entryTable->rowCount();
+    int nCols = 5;
+
+    entryTable->insertRow(row);
+
+    if (entryIndex < 0)
+    {
+        for (int col = 0 ; col < nCols ; ++col)
+            entryTable->setItem(row,col,new QTableWidgetItem());
+    }
+    else
+    {
+        entryTable->setItem(row,0,new QTableWidgetItem(iconFrom(dates[entryIndex]),entrynames[entryIndex]));
+        entryTable->setItem(row,1,new QTableWidgetItem(usernames[entryIndex]));
+        entryTable->setItem(row,2,new QTableWidgetItem(QString("***************")));
+        entryTable->setItem(row,3,new QTableWidgetItem(QIcon(":/edit"), QString()));
+        entryTable->setItem(row,4,new QTableWidgetItem(QIcon(":/regenerate"), QString()));
+        entryTable->setRowHeight(row,20);
+    }
+
+    // Disabling modification for each cell
+    for (int col = 0 ; col < nCols ; ++col)
+        entryTable->item(row,col)->setFlags(Qt::ItemIsEnabled);
 }
 
 QIcon MainWindow::iconFrom(const QString &date) const

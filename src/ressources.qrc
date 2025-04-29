@@ -6,5 +6,6 @@
         <file alias="logo">icons/logo.ico</file>
         <file alias="edit">icons/edit.ico</file>
         <file alias="validate">icons/validate.ico</file>
+        <file alias="regenerate">icons/regenerate.ico</file>
     </qresource>
 </RCC>
