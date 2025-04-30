@@ -98,9 +98,9 @@ MainWindow::~MainWindow()
 void MainWindow::copyCell(const int row, const int col) const
 {
     if (col == 1) // column for usernames
-        clipboard->setText(usernames[row]);
+        clipboard->setText(entryTable->item(row,col)->text());
     else if (col == 2) // column for passwords
-        clipboard->setText(passwords[row]);
+        clipboard->setText(passwords[indexOf(entryTable->item(row,0)->text(),entryTable->item(row,1)->text())]);
 }
 
 void MainWindow::buttonFromCell(const int row, const int col)
