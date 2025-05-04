@@ -3,14 +3,18 @@
 
 #include "regentrywindow.h"
 
-RegEntryWindow::RegEntryWindow()
+RegEntryWindow::RegEntryWindow(QWidget *parent)
+    : QDialog(parent)
 {
     setWindowTitle(tr("Re-générer une entrée"));
     setFixedSize(windowSize);
 
-    entrynameLabel = new QLabel(QString(tr("Nom de l'entrée")));
-    usernameLabel = new QLabel(QString(tr("Nom d'utilisateur")));
+    entrynameFieldLabel = new QLabel(QString(tr("Nom de l'entrée")));
+    usernameFieldLabel = new QLabel(QString(tr("Nom d'utilisateur")));
     passwordLengthLabel = new QLabel(QString(tr("Nombre de caractères")));
+
+    entrynameLabel = new QLabel(QString());
+    usernameLabel = new QLabel(QString());
 
     entrynameLine = new QLineEdit();
 
@@ -38,8 +42,8 @@ RegEntryWindow::RegEntryWindow()
     cancelButton = new QPushButton(QString(tr("Annuler")));
 
     formLayout = new QFormLayout();
-    formLayout->addRow(entrynameLabel, entrynameBox);
-    formLayout->addRow(usernameLabel, usernameBox);
+    formLayout->addRow(entrynameFieldLabel, entrynameLabel);
+    formLayout->addRow(usernameFieldLabel, usernameLabel);
     formLayout->addRow(passwordLengthLabel, passwordLengthBox);
 
     spinBoxesLayout = new QHBoxLayout();
@@ -86,18 +90,24 @@ void RegEntryWindow::updateEntries(const QStringList &entries, const QStringList
     enableSpecialsBox->setChecked(true);
 }
 
+void RegEntryWindow::open(const QString &entryname, const QString &username)
+{
+    // Clearing fields
+    passwordLengthBox->setValue(0);
+    enableLowCaseBox->setChecked(true);
+    enableUpCaseBox->setChecked(true);
+    enableNumbersBox->setChecked(true);
+    enableSpecialsBox->setChecked(true);
+    // Setting entry and user names
+    entrynameLabel->setText(entryname);
+    usernameLabel->setText(username);
+    // Opening window
+    QDialog::open();
+}
+
 void RegEntryWindow::verifications()
 {
-    if (usernameBox->currentText().isEmpty())
-    {
-        // Username is empty if, and only if entry name is incorrect.
-        QMessageBox::critical(
-            this,
-            this->windowTitle(),
-            tr("Veuillez préciser une entrée correcte.")
-        );
-    }
-    else if (passwordLengthBox->value() == 0)
+    if (passwordLengthBox->value() == 0)
     {
         QMessageBox::critical(
             this,

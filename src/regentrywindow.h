@@ -26,9 +26,9 @@ class RegEntryWindow : public QDialog
     Q_OBJECT
 
 public:
-    RegEntryWindow();
-    QString getEntryname() const { return entrynameBox->currentText(); }
-    QString getUsername() const { return usernameBox->currentText(); }
+    RegEntryWindow(QWidget *parent = nullptr);
+    QString getEntryname() const { return entrynameLabel->text(); }
+    QString getUsername() const { return usernameLabel->text(); }
     int getPasswordLength() const { return passwordLengthBox->value(); }
     bool hasLowCase() const { return enableLowCaseBox->isChecked(); }
     bool hasUpCase() const { return enableUpCaseBox->isChecked(); }
@@ -44,6 +44,15 @@ public:
      * @note Must be called before show().
      */
     void updateEntries(const QStringList &entries, const QStringList &usernames);
+
+public slots:
+    /**
+     * @brief Overwrite QDialog::open() to display entry and user names.
+     * @param entryname: Name of entry to be re-generated.
+     * @param username: Name of the user to be re-generated.
+     * Reset user input fields to default.
+     */
+    void open(const QString &entryname, const QString &username);
 
 private slots:
     /**
@@ -77,9 +86,12 @@ private:
     QHBoxLayout *spinBoxesLayout;
     QHBoxLayout *buttonsLayout;
 
+    QLabel *entrynameFieldLabel;
+    QLabel *usernameFieldLabel;
+    QLabel *passwordLengthLabel;
+
     QLabel *entrynameLabel;
     QLabel *usernameLabel;
-    QLabel *passwordLengthLabel;
 
     QComboBox *entrynameBox;
     QComboBox *usernameBox;

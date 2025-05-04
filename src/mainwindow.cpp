@@ -51,9 +51,8 @@ MainWindow::MainWindow(QWidget *parent)
     delWindow->setWindowIcon(windowIcon());
     delWindow->setModal(Qt::ApplicationModal);
 
-    regWindow = new RegEntryWindow();
+    regWindow = new RegEntryWindow(this);
     regWindow->setWindowIcon(windowIcon());
-    regWindow->setModal(Qt::ApplicationModal);
     regWindow->setPasswordMaxLength(PASSWORD_MAXLEN);
 
     mainLayout = new QGridLayout;
@@ -73,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
     connect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
     connect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
-    connect(regButton, SIGNAL(pressed()), this, SLOT(showRegWindow()));
+//    connect(regButton, SIGNAL(pressed()), this, SLOT(showRegWindow()));
     connect(addWindow, SIGNAL(accepted()), this, SLOT(addEntry()));
     connect(delWindow, SIGNAL(accepted()), this, SLOT(delEntry()));
     connect(regWindow, SIGNAL(accepted()), this, SLOT(regEntry()));
@@ -108,6 +107,7 @@ void MainWindow::buttonFromCell(const int row, const int col)
     switch (col)
     {
     case 3: emit editEntryClicked(row); break;
+    case 4: regWindow->open(entryTable->item(row,0)->text(),entryTable->item(row,1)->text()); break;
     default: break;
     }
 }
