@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     addButton = new QPushButton(tr("Ajouter"));
     delButton = new QPushButton(tr("Supprimer"));
-    regButton = new QPushButton(tr("Re-générer"));
 
     searchModel = new QStringListModel;
 
@@ -58,9 +57,8 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout = new QGridLayout;
     mainLayout->addWidget(addButton,0,0);
     mainLayout->addWidget(delButton,0,1);
-    mainLayout->addWidget(regButton,0,2);
-    mainLayout->addWidget(searchBar,1,0,1,3);
-    mainLayout->addWidget(entryTable,2,0,1,3);
+    mainLayout->addWidget(searchBar,1,0,1,2);
+    mainLayout->addWidget(entryTable,2,0,1,2);
 
     mainContent = new QWidget();
     mainContent->setLayout(mainLayout);
@@ -72,7 +70,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
     connect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
     connect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
-//    connect(regButton, SIGNAL(pressed()), this, SLOT(showRegWindow()));
     connect(addWindow, SIGNAL(accepted()), this, SLOT(addEntry()));
     connect(delWindow, SIGNAL(accepted()), this, SLOT(delEntry()));
     connect(regWindow, SIGNAL(accepted()), this, SLOT(regEntry()));
@@ -152,12 +149,6 @@ void MainWindow::showDelWindow() const
 {
     delWindow->updateEntries(entrynames, usernames);
     delWindow->show();
-}
-
-void MainWindow::showRegWindow() const
-{
-//    regWindow->updateEntries(entrynames, usernames);
-    regWindow->show();
 }
 
 void MainWindow::loadEntries()
@@ -438,8 +429,6 @@ void MainWindow::regEntry()
         this->windowTitle(),
         tr("Mot de passe re-généré avec succès.")
         );
-
-    updateTable();
 }
 
 void MainWindow::editEntry(const int row)
@@ -469,7 +458,6 @@ void MainWindow::editEntry(const int row)
         disconnect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
         disconnect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
         disconnect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
-        disconnect(regButton, SIGNAL(pressed()), this, SLOT(showRegWindow()));
     }
     else if (rowEdited == row) // user validates modifications
     {
@@ -504,9 +492,6 @@ void MainWindow::editEntry(const int row)
         connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
         connect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
         connect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
-        connect(regButton, SIGNAL(pressed()), this, SLOT(showRegWindow()));
-
-        updateTable();
     }
     else // another entry is being modified
     {

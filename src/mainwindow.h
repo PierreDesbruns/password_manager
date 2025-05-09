@@ -77,10 +77,6 @@ private slots:
      * @brief Show window responsible for deleting an entry.
      */
     void showDelWindow() const;
-    /**
-     * @brief Show window responsible for re-generating an entry password.
-     */
-    void showRegWindow() const;
 
     /**
      * @brief Load entries from entries file and store each field in corresponding string list.
@@ -135,7 +131,6 @@ private:
 
     QPushButton *addButton;
     QPushButton *delButton;
-    QPushButton *regButton;
 
     QLineEdit *searchBar;
     QCompleter *searchCompleter;
