@@ -106,8 +106,8 @@ private slots:
      * @brief Make entry and user names editable.
      * @param row: Row index of the entry being edited.
      * Called when the edit cell of an entry is clicked.
-     * Disconnects searchbar text changed signal from table update to avoid
-     * searching while editing an entry.
+     * Disconnect searchbar text changed, buttons and cell copy signals to avoid
+     * conflicts while editing an entry.
      * @note Close the window if a problem occurs while writing in file.
      */
     void editEntry(const int row);

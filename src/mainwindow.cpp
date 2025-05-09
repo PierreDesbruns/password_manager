@@ -454,10 +454,11 @@ void MainWindow::editEntry(const int row)
         entrynames[indexToEdit] = "entrynametoBeEdited";
         usernames[indexToEdit] = "usernametoBeEdited";
 
-        // Disabling search bar and buttons while editing
+        // Disabling search bar, buttons and cell copy while editing
         disconnect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
         disconnect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
         disconnect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
+        disconnect(entryTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(copyCell(int,int)));
     }
     else if (rowEdited == row) // user validates modifications
     {
@@ -495,10 +496,11 @@ void MainWindow::editEntry(const int row)
             close();
         }
 
-        // Re-enabling search bar and buttons
+        // Re-enabling search bar, buttons and cell copy
         connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
         connect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
         connect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
+        connect(entryTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(copyCell(int,int)));
     }
     else // another entry is being modified
     {
