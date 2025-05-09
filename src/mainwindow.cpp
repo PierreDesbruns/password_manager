@@ -439,11 +439,11 @@ void MainWindow::editEntry(const int row)
     {
         int indexToEdit = indexOf(entryTable->item(row,0)->text(), entryTable->item(row,1)->text());
 
-        // Entry name
+        // Setting entry name to editable and changing color
         entryTable->item(row,0)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
         entryTable->item(row,0)->setBackground(QColor(30,150,190));
         entryTable->item(row,0)->setForeground(QColor(255,255,255));
-        // User name
+        // Setting user name to editable and changing color
         entryTable->item(row,1)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
         entryTable->item(row,1)->setBackground(QColor(30,150,190));
         entryTable->item(row,1)->setForeground(QColor(255,255,255));
@@ -463,9 +463,16 @@ void MainWindow::editEntry(const int row)
     {
         int indexToEdit = indexOf("entrynametoBeEdited", "usernametoBeEdited");
 
-        entryTable->item(row,0)->setFlags(Qt::ItemIsEnabled); // entry name
-        entryTable->item(row,1)->setFlags(Qt::ItemIsEnabled); // user name
-
+        // Resetting entry name to read only and resetting color
+        entryTable->item(row,0)->setFlags(Qt::ItemIsEnabled);
+        entryTable->item(row,0)->setBackground(QColor(255,255,255));
+        entryTable->item(row,0)->setForeground(QColor(0,0,0));
+        // Resetting user name to read only and resetting color
+        entryTable->item(row,1)->setFlags(Qt::ItemIsEnabled);
+        entryTable->item(row,1)->setBackground(QColor(255,255,255));
+        entryTable->item(row,1)->setForeground(QColor(0,0,0));
+        // Resetting validate icon to edit icon
+        entryTable->item(row,3)->setIcon(QIcon(":/edit"));
 
         // Updating new entry and user names
         entrynames[indexToEdit] = entryTable->item(row,0)->text();
