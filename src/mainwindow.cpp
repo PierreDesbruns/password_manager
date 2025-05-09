@@ -156,7 +156,7 @@ void MainWindow::showDelWindow() const
 
 void MainWindow::showRegWindow() const
 {
-    regWindow->updateEntries(entrynames, usernames);
+//    regWindow->updateEntries(entrynames, usernames);
     regWindow->show();
 }
 

@@ -35,22 +35,12 @@ public:
     bool hasNumbers() const { return enableNumbersBox->isChecked(); }
     bool hasSpecials() const { return enableSpecialsBox->isChecked(); }
     void setPasswordMaxLength(const int length) { passwordLengthBox->setMaximum(length); }
-    /**
-     * @brief Update string list attributes with given entries and usernames; clear input fields.
-     *
-     * @param entries: list of entry names.
-     * @param usernames: list of user names.
-     *
-     * @note Must be called before show().
-     */
-    void updateEntries(const QStringList &entries, const QStringList &usernames);
 
 public slots:
     /**
-     * @brief Overwrite QDialog::open() to display entry and user names.
+     * @brief Overwrite QDialog::open() to display entry and user names after clearing user input fields.
      * @param entryname: Name of entry to be re-generated.
      * @param username: Name of the user to be re-generated.
-     * Reset user input fields to default.
      */
     void open(const QString &entryname, const QString &username);
 
@@ -65,16 +55,6 @@ private slots:
      * 3. At least one box must be checked.
      */
     void verifications();
-    /**
-     * @brief Update usernames combobox depending on entry name.
-     *
-     * @param entryBoxText: current text of entry name combobox.
-     *
-     * Called when entry name text is changed.
-     * Used to ensure that user enters an existing username associated with entry name.
-     * If entry name is not valid, username box is empty.
-     */
-    void updateUsernameBox(const QString &entryBoxText) const;
 
 private:
     const QSize windowSize = QSize(300,150);
@@ -93,13 +73,6 @@ private:
     QLabel *entrynameLabel;
     QLabel *usernameLabel;
 
-    QComboBox *entrynameBox;
-    QComboBox *usernameBox;
-
-    QLineEdit *entrynameLine;
-    QCompleter *entrynameCompleter;
-    QStringListModel *entrynameModel;
-
     QSpinBox *passwordLengthBox;
 
     QCheckBox *enableLowCaseBox;
@@ -109,10 +82,6 @@ private:
 
     QPushButton *confirmButton;
     QPushButton *cancelButton;
-
-    QStringList fullEntrynameList;
-    QStringList fullUsernameList;
-    QStringList displayedEntrynameList; // sorted entries without duplicates
 };
 
 #endif // REGENTRYWINDOW_H
