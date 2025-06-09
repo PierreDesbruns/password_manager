@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     searchBar = new QLineEdit();
     searchBar->setCompleter(searchCompleter);
 
-    entryTable = new QTableWidget(0,5);
+    entryTable = new QTableWidget(0,6);
     entryTable->horizontalHeader()->setVisible(false);
     entryTable->verticalHeader()->setVisible(false);
     entryTable->setColumnWidth(0,120); // entry names
@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     entryTable->setColumnWidth(2,100); // passwords
     entryTable->setColumnWidth(3,20);  // edit buttons
     entryTable->setColumnWidth(4,20);  // re-generate buttons
+    entryTable->setColumnWidth(5,20);  // delete buttons
 
     loginWindow = new LoginWindow();
     loginWindow->setWindowIcon(windowIcon());
@@ -520,7 +521,7 @@ void MainWindow::editEntry(const int row)
 void MainWindow::addRow(const int entryIndex) const
 {
     int row = entryTable->rowCount();
-    int nCols = 5;
+    int nCols = entryTable->columnCount();
 
     entryTable->insertRow(row);
 
@@ -536,6 +537,7 @@ void MainWindow::addRow(const int entryIndex) const
         entryTable->setItem(row,2,new QTableWidgetItem(QString("***************")));
         entryTable->setItem(row,3,new QTableWidgetItem(QIcon(":/edit"), QString()));
         entryTable->setItem(row,4,new QTableWidgetItem(QIcon(":/regenerate"), QString()));
+        entryTable->setItem(row,5,new QTableWidgetItem(QIcon(":/delete"), QString()));
         entryTable->setRowHeight(row,20);
     }
 

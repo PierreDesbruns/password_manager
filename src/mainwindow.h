@@ -123,7 +123,7 @@ signals:
 private:
     QClipboard *clipboard;
 
-    const QSize windowSize = QSize(460,500);
+    const QSize windowSize = QSize(500,500);
 
     QWidget *mainContent;
 
