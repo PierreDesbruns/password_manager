@@ -92,10 +92,10 @@ private slots:
     void addEntry();
     /**
      * @brief Remove an entry from string lists attributes, write entries in file, and update table.
-     * Called when [delWindow] is accepted.
-     * @note Given entry should exist due to [delwindow] verifications.
+     * @param row: Row index of the entry to be deleted.
+     * Called when delete cell of an entry is clicked.
      */
-    void delEntry();
+    void delEntry(const int row);
     /**
      * @brief Re-generate a password for given entry and username, and write entries in file.
      * Called when [regWindow] is accepted.

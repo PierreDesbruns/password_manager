@@ -70,9 +70,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, SIGNAL(editEntryClicked(int)), this, SLOT(editEntry(int)));
     connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
     connect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
-    connect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
+//    connect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
     connect(addWindow, SIGNAL(accepted()), this, SLOT(addEntry()));
-    connect(delWindow, SIGNAL(accepted()), this, SLOT(delEntry()));
+//    connect(delWindow, SIGNAL(accepted()), this, SLOT(delEntry()));
     connect(regWindow, SIGNAL(accepted()), this, SLOT(regEntry()));
     connect(loginWindow, SIGNAL(accepted()), this, SLOT(loadEntries()));
     connect(loginWindow, SIGNAL(rejected()), this, SLOT(close()));
@@ -106,6 +106,7 @@ void MainWindow::buttonFromCell(const int row, const int col)
     {
     case 3: emit editEntryClicked(row); break;
     case 4: regWindow->open(entryTable->item(row,0)->text(),entryTable->item(row,1)->text()); break;
+    case 5: delEntry(row);
     default: break;
     }
 }
@@ -252,8 +253,8 @@ void MainWindow::addEntry()
             this->windowTitle(),
             tr("Une erreur est survenue lors de la génération du mot de passe.\n"
                "L'entrée suivante n'a pas été ajoutée:\n\n"
-               "\t%1\n"
-               "\t%2"
+               "     %1\n"
+               "     %2"
                ).arg(entryname, username)
             );
         return;
@@ -273,8 +274,8 @@ void MainWindow::addEntry()
             this->windowTitle(),
             tr("Une erreur est survenue lors de l'enregistrement des entrées.\n"
                "L'entrée suivante n'a pas été ajoutée:\n\n"
-               "\t%1\n"
-               "\t%2"
+               "     %1\n"
+               "     %2"
                ).arg(entryname, username)
             );
         return;
@@ -296,12 +297,27 @@ void MainWindow::addEntry()
     updateTable();
 }
 
-void MainWindow::delEntry()
+void MainWindow::delEntry(const int row)
 {
     // User inputs
-    QString entryname = delWindow->getEntryname();
-    QString username = delWindow->getUsername();
-    int indexToRemove = entrynames.indexOf(entryname);
+    QString entryname = entryTable->item(row,0)->text();
+    QString username = entryTable->item(row,1)->text();
+    int indexToRemove = indexOf(entryname, username);
+
+    // Asking user to confirm deletion
+    int answer = QMessageBox::warning(
+        this,
+        this->windowTitle(),
+        tr("L'entrée suivante va être supprimée :\n\n"
+           "     %1\n"
+           "     %2\n\n"
+           "Voulez-vous vraiment la supprimer ?"
+           ).arg(entryname, username),
+        QMessageBox::Ok,
+        QMessageBox::Cancel
+        );
+
+    if (answer == QMessageBox::Cancel) return;
 
     // Temporary variables
     QStringList tempEntrynames = entrynames;
@@ -332,8 +348,8 @@ void MainWindow::delEntry()
             this->windowTitle(),
             tr("Une erreur est survenue lors l'enregistrement des entrées.\n"
                "L'entrée suivante n'a pas été ajoutée:\n\n"
-               "\t%1\n"
-               "\t%2"
+               "     %1\n"
+               "     %2"
                ).arg(entryname, username)
             );
         return;
@@ -384,8 +400,8 @@ void MainWindow::regEntry()
             this->windowTitle(),
             tr("Une erreur est survenue lors de la génération du mot de passe.\n"
                "Le mot de passe de l'entrée suivante n'a pas été re-généré:\n\n"
-               "\t%1\n"
-               "\t%2"
+               "     %1\n"
+               "     %2"
                ).arg(entryname, username)
             );
         return;
@@ -509,8 +525,8 @@ void MainWindow::editEntry(const int row)
             this,
             this->windowTitle(),
             tr("L'entrée\n"
-               "\t%1\n"
-               "\t%2\n"
+               "     %1\n"
+               "     %2\n"
                "est en cours de modification.\n"
                "Veuillez valider les modifications pour éditer une autre entrée."
                ).arg(entryTable->item(rowEdited, 0)->text(), entryTable->item(rowEdited, 1)->text())
