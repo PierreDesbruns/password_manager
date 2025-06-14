@@ -26,7 +26,6 @@
 #include "pwmsecurity.h"
 #include "loginwindow.h"
 #include "addentrywindow.h"
-#include "delentrywindow.h"
 #include "regentrywindow.h"
 
 
@@ -73,10 +72,6 @@ private slots:
      * @brief Show window responsible for adding an entry.
      */
     void showAddWindow() const;
-    /**
-     * @brief Show window responsible for deleting an entry.
-     */
-    void showDelWindow() const;
 
     /**
      * @brief Load entries from entries file and store each field in corresponding string list.
@@ -130,7 +125,6 @@ private:
     QGridLayout *mainLayout;
 
     QPushButton *addButton;
-    QPushButton *delButton;
 
     QLineEdit *searchBar;
     QCompleter *searchCompleter;
@@ -140,7 +134,6 @@ private:
 
     LoginWindow *loginWindow; // window responsible for authentification. Shows only on start.
     AddEntryWindow *addWindow; // window responsible for adding entries
-    DelEntryWindow *delWindow; // window responsible for deleting entries
     RegEntryWindow *regWindow; // window responsible for re-generate entries password
 
     QStringList entrynames;

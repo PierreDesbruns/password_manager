@@ -14,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
     clipboard = QApplication::clipboard();
 
     addButton = new QPushButton(tr("Ajouter"));
-    delButton = new QPushButton(tr("Supprimer"));
 
     searchModel = new QStringListModel;
 
@@ -47,17 +46,12 @@ MainWindow::MainWindow(QWidget *parent)
     addWindow->setUsernameMaxLength(USERNAME_MAXLEN);
     addWindow->setPasswordMaxLength(PASSWORD_MAXLEN);
 
-    delWindow = new DelEntryWindow();
-    delWindow->setWindowIcon(windowIcon());
-    delWindow->setModal(Qt::ApplicationModal);
-
     regWindow = new RegEntryWindow(this);
     regWindow->setWindowIcon(windowIcon());
     regWindow->setPasswordMaxLength(PASSWORD_MAXLEN);
 
     mainLayout = new QGridLayout;
-    mainLayout->addWidget(addButton,0,0);
-    mainLayout->addWidget(delButton,0,1);
+    mainLayout->addWidget(addButton,0,0,1,2);
     mainLayout->addWidget(searchBar,1,0,1,2);
     mainLayout->addWidget(entryTable,2,0,1,2);
 
@@ -70,9 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, SIGNAL(editEntryClicked(int)), this, SLOT(editEntry(int)));
     connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
     connect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
-//    connect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
     connect(addWindow, SIGNAL(accepted()), this, SLOT(addEntry()));
-//    connect(delWindow, SIGNAL(accepted()), this, SLOT(delEntry()));
     connect(regWindow, SIGNAL(accepted()), this, SLOT(regEntry()));
     connect(loginWindow, SIGNAL(accepted()), this, SLOT(loadEntries()));
     connect(loginWindow, SIGNAL(rejected()), this, SLOT(close()));
@@ -145,12 +137,6 @@ void MainWindow::showAddWindow() const
 {
     addWindow->clearFields();
     addWindow->show();
-}
-
-void MainWindow::showDelWindow() const
-{
-    delWindow->updateEntries(entrynames, usernames);
-    delWindow->show();
 }
 
 void MainWindow::loadEntries()
@@ -474,7 +460,6 @@ void MainWindow::editEntry(const int row)
         // Disabling search bar, buttons and cell copy while editing
         disconnect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
         disconnect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
-        disconnect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
         disconnect(entryTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(copyCell(int,int)));
     }
     else if (rowEdited == row) // user validates modifications
@@ -505,8 +490,8 @@ void MainWindow::editEntry(const int row)
                 this->windowTitle(),
                 tr("Une erreur est survenue lors de l'enregistrement des entrées.\n"
                    "L'entrée suivante n'a pas été modifiée:\n"
-                   "\t%1\n"
-                   "\t%2\n"
+                   "     %1\n"
+                   "     %2\n"
                    "L'application doit être redémarrée pour recharger les entrées correctes."
                    ).arg(entrynames[indexToEdit], usernames[indexToEdit])
                 );
@@ -516,7 +501,6 @@ void MainWindow::editEntry(const int row)
         // Re-enabling search bar, buttons and cell copy
         connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
         connect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
-        connect(delButton, SIGNAL(pressed()), this, SLOT(showDelWindow()));
         connect(entryTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(copyCell(int,int)));
     }
     else // another entry is being modified

@@ -22,8 +22,6 @@ set(PROJECT_SOURCES
         mainwindow.h
         addentrywindow.cpp
         addentrywindow.h
-        delentrywindow.cpp
-        delentrywindow.h
         regentrywindow.cpp
         regentrywindow.h
         loginwindow.cpp
