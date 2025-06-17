@@ -59,9 +59,11 @@ MainWindow::MainWindow(QWidget *parent)
     mainContent->setLayout(mainLayout);
     setCentralWidget(mainContent);
 
+    connect(this, SIGNAL(delEntryClicked(int)), this, SLOT(delEntry(int)));
+    connect(this, SIGNAL(regEntryClicked(int)), this, SLOT(openRegWindow(int)));
+    connect(this, SIGNAL(editEntryClicked(int)), this, SLOT(editEntry(int)));
     connect(entryTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(copyCell(int,int)));
     connect(entryTable, SIGNAL(cellClicked(int,int)), this, SLOT(buttonFromCell(int,int)));
-    connect(this, SIGNAL(editEntryClicked(int)), this, SLOT(editEntry(int)));
     connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
     connect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
     connect(addWindow, SIGNAL(accepted()), this, SLOT(addEntry()));
@@ -97,8 +99,8 @@ void MainWindow::buttonFromCell(const int row, const int col)
     switch (col)
     {
     case 3: emit editEntryClicked(row); break;
-    case 4: regWindow->open(entryTable->item(row,0)->text(),entryTable->item(row,1)->text()); break;
-    case 5: delEntry(row);
+    case 4: emit regEntryClicked(row); break;
+    case 5: emit delEntryClicked(row); break;
     default: break;
     }
 }
@@ -137,6 +139,11 @@ void MainWindow::showAddWindow() const
 {
     addWindow->clearFields();
     addWindow->show();
+}
+
+void MainWindow::openRegWindow(const int row) const
+{
+    regWindow->open(entryTable->item(row,0)->text(),entryTable->item(row,1)->text());
 }
 
 void MainWindow::loadEntries()
@@ -442,22 +449,22 @@ void MainWindow::editEntry(const int row)
     {
         int indexToEdit = indexOf(entryTable->item(row,0)->text(), entryTable->item(row,1)->text());
 
-        // Setting entry name to editable and changing color
+        // Setting entry and user names to editable
         entryTable->item(row,0)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
-        entryTable->item(row,0)->setBackground(QColor(30,150,190));
-        entryTable->item(row,0)->setForeground(QColor(255,255,255));
-        // Setting user name to editable and changing color
         entryTable->item(row,1)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
-        entryTable->item(row,1)->setBackground(QColor(30,150,190));
-        entryTable->item(row,1)->setForeground(QColor(255,255,255));
         // Setting edit icon to validate icon
         entryTable->item(row,3)->setIcon(QIcon(":/validate"));
+        // Setting cell background to lightgrey
+        for (int col = 0 ; col < entryTable->columnCount() ; col++)
+            entryTable->item(row,col)->setBackground(QColor(210,210,210));
 
         // Memorizing entry to edit
         entrynames[indexToEdit] = "entrynametoBeEdited";
         usernames[indexToEdit] = "usernametoBeEdited";
 
-        // Disabling search bar, buttons and cell copy while editing
+        // Disabling deletion, re-generation, search bar, buttons and cell copy while editing
+        disconnect(this, SIGNAL(delEntryClicked(int)), this, SLOT(delEntry(int)));
+        disconnect(this, SIGNAL(regEntryClicked(int)), this, SLOT(openRegWindow(int)));
         disconnect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
         disconnect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
         disconnect(entryTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(copyCell(int,int)));
@@ -466,16 +473,14 @@ void MainWindow::editEntry(const int row)
     {
         int indexToEdit = indexOf("entrynametoBeEdited", "usernametoBeEdited");
 
-        // Resetting entry name to read only and resetting color
+        // Resetting entry and user names to read only
         entryTable->item(row,0)->setFlags(Qt::ItemIsEnabled);
-        entryTable->item(row,0)->setBackground(QColor(255,255,255));
-        entryTable->item(row,0)->setForeground(QColor(0,0,0));
-        // Resetting user name to read only and resetting color
         entryTable->item(row,1)->setFlags(Qt::ItemIsEnabled);
-        entryTable->item(row,1)->setBackground(QColor(255,255,255));
-        entryTable->item(row,1)->setForeground(QColor(0,0,0));
         // Resetting validate icon to edit icon
         entryTable->item(row,3)->setIcon(QIcon(":/edit"));
+        // Setting cell background to lightgrey
+        for (int col = 0 ; col < entryTable->columnCount() ; col++)
+            entryTable->item(row,col)->setBackground(QColor(255,255,255));
 
         // Updating new entry and user names
         entrynames[indexToEdit] = entryTable->item(row,0)->text();
@@ -498,7 +503,9 @@ void MainWindow::editEntry(const int row)
             close();
         }
 
-        // Re-enabling search bar, buttons and cell copy
+        // Re-enabling deletion, re-generation, search bar, buttons and cell copy
+        connect(this, SIGNAL(delEntryClicked(int)), this, SLOT(delEntry(int)));
+        connect(this, SIGNAL(regEntryClicked(int)), this, SLOT(openRegWindow(int)));
         connect(searchBar, SIGNAL(textChanged(QString)), this, SLOT(updateTable(QString)));
         connect(addButton, SIGNAL(pressed()), this, SLOT(showAddWindow()));
         connect(entryTable, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(copyCell(int,int)));

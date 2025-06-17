@@ -72,6 +72,12 @@ private slots:
      * @brief Show window responsible for adding an entry.
      */
     void showAddWindow() const;
+    /**
+     * @brief Open window responsible for re-generating an enrty.
+     * @param row: Entry's row index in table.
+     * @note This slot needs to be disconnected when an entry is being edited.
+     */
+    void openRegWindow(const int row) const;
 
     /**
      * @brief Load entries from entries file and store each field in corresponding string list.
@@ -109,8 +115,20 @@ private slots:
 
 signals:
     /**
-     * @brief Signal emitted when the edit button is clicked
-     * @param row: Row index of the entry being edited.
+     * @brief Signal emitted when delete button is clicked.
+     * @param row: Entry's row index in table.
+     * @see buttonFromCell()
+     */
+    void delEntryClicked(const int row);
+    /**
+     * @brief Signal emitted when re-generate button is clicked.
+     * @param row: Entry's row index in table.
+     * @see buttonFromCell()
+     */
+    void regEntryClicked(const int row);
+    /**
+     * @brief Signal emitted when entry edit button is clicked.
+     * @param row: Entry's row index in table.
      * @see buttonFromCell()
      */
     void editEntryClicked(const int row);
@@ -118,7 +136,7 @@ signals:
 private:
     QClipboard *clipboard;
 
-    const QSize windowSize = QSize(500,500);
+    const QSize windowSize = QSize(500,600);
 
     QWidget *mainContent;
 
