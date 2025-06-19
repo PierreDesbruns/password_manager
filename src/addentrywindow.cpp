@@ -52,8 +52,9 @@ AddEntryWindow::AddEntryWindow()
     connect(cancelButton, SIGNAL(pressed()), this, SLOT(reject()));
 }
 
-void AddEntryWindow::clearFields() const
+void AddEntryWindow::open()
 {
+    // CLearing fields
     entrynameLine->clear();
     usernameLine->clear();
     passwordLengthBox->setValue(0);
@@ -61,6 +62,9 @@ void AddEntryWindow::clearFields() const
     enableUpCaseBox->setChecked(true);
     enableNumbersBox->setChecked(true);
     enableSpecialsBox->setChecked(true);
+
+    // Opening window
+    QDialog::open();
 }
 
 void AddEntryWindow::verifications()

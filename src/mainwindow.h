@@ -69,10 +69,6 @@ private slots:
     void updateTable(const QString &entryname) const;
 
     /**
-     * @brief Show window responsible for adding an entry.
-     */
-    void showAddWindow() const;
-    /**
      * @brief Open window responsible for re-generating an enrty.
      * @param row: Entry's row index in table.
      * @note This slot needs to be disconnected when an entry is being edited.

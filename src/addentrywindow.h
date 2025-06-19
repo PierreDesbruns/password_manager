@@ -33,14 +33,12 @@ public:
     void setEntrynameMaxLength(const int length) { entrynameLine->setMaxLength(length); }
     void setUsernameMaxLength(const int length) { usernameLine->setMaxLength(length); }
     void setPasswordMaxLength(const int length) { passwordLengthBox->setMaximum(length); }
+
+public slots:
     /**
-     * @brief Clear value of every field.
-     *
-     * Used to provide a standard window everytime it is open.
-     *
-     * @note Must be called before show().
+     * @brief Overwrite QDialog::open() to clear user input fields before opening.
      */
-    void clearFields() const;
+    void open();
 
 private slots:
     /**
