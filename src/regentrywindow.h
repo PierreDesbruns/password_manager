@@ -26,7 +26,7 @@ class RegEntryWindow : public QDialog
     Q_OBJECT
 
 public:
-    RegEntryWindow(QWidget *parent = nullptr);
+    RegEntryWindow(const int passwordMaxLength, QWidget *parent = nullptr);
     QString getEntryname() const { return entrynameLabel->text(); }
     QString getUsername() const { return usernameLabel->text(); }
     int getPasswordLength() const { return passwordLengthBox->value(); }
@@ -34,7 +34,6 @@ public:
     bool hasUpCase() const { return enableUpCaseBox->isChecked(); }
     bool hasNumbers() const { return enableNumbersBox->isChecked(); }
     bool hasSpecials() const { return enableSpecialsBox->isChecked(); }
-    void setPasswordMaxLength(const int length) { passwordLengthBox->setMaximum(length); }
 
 public slots:
     /**

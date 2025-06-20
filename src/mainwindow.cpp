@@ -46,9 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
     addWindow->setUsernameMaxLength(USERNAME_MAXLEN);
     addWindow->setPasswordMaxLength(PASSWORD_MAXLEN);
 
-    regWindow = new RegEntryWindow(this);
+    regWindow = new RegEntryWindow(PASSWORD_MAXLEN, this);
     regWindow->setWindowIcon(windowIcon());
-    regWindow->setPasswordMaxLength(PASSWORD_MAXLEN);
 
     mainLayout = new QGridLayout;
     mainLayout->addWidget(addButton,0,0,1,2);

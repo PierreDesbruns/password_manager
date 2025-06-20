@@ -3,7 +3,7 @@
 
 #include "regentrywindow.h"
 
-RegEntryWindow::RegEntryWindow(QWidget *parent)
+RegEntryWindow::RegEntryWindow(const int passwordMaxLength, QWidget *parent)
     : QDialog(parent)
 {
     setWindowTitle(tr("Re-générer une entrée"));
@@ -17,6 +17,7 @@ RegEntryWindow::RegEntryWindow(QWidget *parent)
     usernameLabel = new QLabel(QString());
 
     passwordLengthBox = new QSpinBox();
+    passwordLengthBox->setMaximum(passwordMaxLength);
 
     enableLowCaseBox = new QCheckBox(QString("a..z"));
     enableUpCaseBox = new QCheckBox(QString("A..Z"));
