@@ -39,12 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
     loginWindow->setWindowIcon(windowIcon());
     loginWindow->setModal(Qt::ApplicationModal);
 
-    addWindow = new AddEntryWindow();
+    addWindow = new AddEntryWindow(ENTRYNAME_MAXLEN, USERNAME_MAXLEN, PASSWORD_MAXLEN, this);
     addWindow->setWindowIcon(windowIcon());
-    addWindow->setModal(Qt::ApplicationModal);
-    addWindow->setEntrynameMaxLength(ENTRYNAME_MAXLEN);
-    addWindow->setUsernameMaxLength(USERNAME_MAXLEN);
-    addWindow->setPasswordMaxLength(PASSWORD_MAXLEN);
 
     regWindow = new RegEntryWindow(PASSWORD_MAXLEN, this);
     regWindow->setWindowIcon(windowIcon());
@@ -297,7 +293,7 @@ void MainWindow::delEntry(const int row)
     // Asking user to confirm deletion
     int answer = QMessageBox::warning(
         this,
-        this->windowTitle(),
+        tr("Supprimer une entrée"),
         tr("L'entrée suivante va être supprimée :\n\n"
            "     %1\n"
            "     %2\n\n"

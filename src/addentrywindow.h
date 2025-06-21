@@ -22,7 +22,7 @@ class AddEntryWindow : public QDialog
     Q_OBJECT
 
 public:
-    AddEntryWindow();
+    AddEntryWindow(const int entrynameMaxLength, const int usernameMaxLength, const int passwordMaxLength, QWidget *parent = nullptr);
     QString getEntryname() const { return entrynameLine->text(); }
     QString getUsername() const { return usernameLine->text(); }
     int getPasswordLength() const { return passwordLengthBox->value(); }
@@ -30,9 +30,6 @@ public:
     bool hasUpCase() const { return enableUpCaseBox->isChecked(); }
     bool hasNumbers() const { return enableNumbersBox->isChecked(); }
     bool hasSpecials() const { return enableSpecialsBox->isChecked(); }
-    void setEntrynameMaxLength(const int length) { entrynameLine->setMaxLength(length); }
-    void setUsernameMaxLength(const int length) { usernameLine->setMaxLength(length); }
-    void setPasswordMaxLength(const int length) { passwordLengthBox->setMaximum(length); }
 
 public slots:
     /**

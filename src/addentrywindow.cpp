@@ -3,7 +3,8 @@
 
 #include "addentrywindow.h"
 
-AddEntryWindow::AddEntryWindow()
+AddEntryWindow::AddEntryWindow(const int entrynameMaxLength, const int usernameMaxLength, const int passwordMaxLength, QWidget *parent)
+    : QDialog(parent)
 {
     setWindowTitle(tr("Nouvelle entrée"));
     setFixedSize(windowSize);
@@ -13,8 +14,11 @@ AddEntryWindow::AddEntryWindow()
     passwordLengthLabel = new QLabel(QString(tr("Nombre de caractères")));
 
     entrynameLine = new QLineEdit();
+    entrynameLine->setMaxLength(entrynameMaxLength);
     usernameLine = new QLineEdit();
+    usernameLine->setMaxLength(usernameMaxLength);
     passwordLengthBox = new QSpinBox();
+    passwordLengthBox->setMaximum(passwordMaxLength);
 
     enableLowCaseBox = new QCheckBox(QString("a..z"));
     enableUpCaseBox = new QCheckBox(QString("A..Z"));
