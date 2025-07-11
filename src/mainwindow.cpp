@@ -45,10 +45,10 @@ MainWindow::MainWindow(QWidget *parent)
     regWindow = new RegEntryWindow(PASSWORD_MAXLEN, this);
     regWindow->setWindowIcon(windowIcon());
 
-    mainLayout = new QGridLayout;
-    mainLayout->addWidget(addButton,0,0,1,2);
-    mainLayout->addWidget(searchBar,1,0,1,2);
-    mainLayout->addWidget(entryTable,2,0,1,2);
+    mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(addButton);
+    mainLayout->addWidget(searchBar);
+    mainLayout->addWidget(entryTable);
 
     mainContent = new QWidget();
     mainContent->setLayout(mainLayout);

@@ -7,7 +7,7 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QIcon>
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QCompleter>
@@ -52,11 +52,11 @@ private slots:
      * @param row: Row index of the clicked cell.
      * @param col: Column index of the clicked cell.
      *
-     * Works only for col == 3.
+     * Works only for col == 3 | 4 | 5.
      */
     void buttonFromCell(const int row, const int col);
     /**
-     * @brief Fills the table with all entries.
+     * @brief Fill the table with all entries.
      * Called when the table needs to be reset.
      */
     void updateTable() const;
@@ -136,7 +136,7 @@ private:
 
     QWidget *mainContent;
 
-    QGridLayout *mainLayout;
+    QVBoxLayout *mainLayout;
 
     QPushButton *addButton;
 
